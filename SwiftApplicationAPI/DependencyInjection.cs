@@ -3,6 +3,7 @@ using Serilog;
 using SwiftApplicationAPI.Services;
 using SwiftApplicationAPI.Data;
 using System.Reflection;
+using SwiftApplicationAPI.Models.ParseMTModels;
 
 namespace SwiftApplicationAPI
 {
@@ -23,7 +24,8 @@ namespace SwiftApplicationAPI
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddSingleton<SWIFTMessagesDataContext>();
-            services.AddSingleton<ISwiftParserService, SwiftParserService>();
+            services.AddSingleton<ISwiftParserService<MT799Model>, MT799ParserService>();
+            services.AddSingleton<ISwiftParserService<MT103Model>, MT103ParserService>();
             services.AddScoped<ISwiftMessageRepository, SwiftMessageRepository>();
 
 

@@ -1,4 +1,4 @@
-﻿using SwiftApplicationAPI.Models;
+﻿using SwiftApplicationAPI.Models.ParseMTModels;
 
 namespace SwiftApplicationAPI.Services
 {

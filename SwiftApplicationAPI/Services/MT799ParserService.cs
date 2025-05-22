@@ -1,13 +1,13 @@
 ﻿using System.Text.RegularExpressions;
-using SwiftApplicationAPI.Models;
+using SwiftApplicationAPI.Models.ParseMTModels;
 
 namespace SwiftApplicationAPI.Services
 {
-    public class SwiftParserService : ISwiftParserService
+    public class MT799ParserService : ISwiftParserService<MT799Model>
     {
-        private readonly ILogger<SwiftParserService> logger;
+        private readonly ILogger<MT799ParserService> logger;
 
-        public SwiftParserService(ILogger<SwiftParserService> logger)
+        public MT799ParserService(ILogger<MT799ParserService> logger)
         {
             this.logger = logger;
         }

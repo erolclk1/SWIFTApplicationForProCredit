@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {}
+    "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {
+    "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
         "projectName": "SwiftApplicationAPI",
-        "projectPath": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
+        "projectPath": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
         "packagesPath": "C:\\Users\\Erol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\obj\\",
+        "outputPath": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

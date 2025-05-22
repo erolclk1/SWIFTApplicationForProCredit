@@ -2,8 +2,8 @@
 
 namespace SwiftApplicationAPI.Services
 {
-    public interface ISwiftParserService
+    public interface ISwiftParserService<TModel>
     {
-        Task <MT799Model> Parser(string swiffContent);
+        Task <TModel> Parser(string swiffContent);
     }
 }

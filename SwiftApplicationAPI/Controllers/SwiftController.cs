@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SwiftApplicationAPI.Services;
 using System.Text;
-using SwiftApplicationAPI.Models;
 using SwiftApplicationAPI.Services;
 using MediatR;
 using SwiftApplicationAPI.Queries.GetSwiftMessage;
+using SwiftApplicationAPI.Models.ParseMTModels;
 
 namespace SwiftApplicationAPI.Controllers
 {
@@ -37,6 +37,22 @@ namespace SwiftApplicationAPI.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [HttpPost]
+        public async Task<MT103Model> GetSwift103Message(IFormFile swiftInput)
+        {
+            try
+            {
+                logger.LogInformation("Sending the GetSwiftMessageQuery");
+                var result = await mediator.Send(new GetSwiftMT103MessageQuery(swiftInput));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Something went wrong in calling the method GetSwiftMessage", ex);
+                throw new Exception(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<int> SWIFTMessageInserting(IFormFile swiftInput)
         {
