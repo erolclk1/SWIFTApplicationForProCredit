@@ -13,10 +13,12 @@ namespace SwiftApplicationAPI.Queries.GetSwiftMessage
     public class MT103MessageGeneratorCommandHandler : IRequestHandler<MT103MessageGeneratorCommand, int>
     {
         private readonly ILogger<MT103MessageGeneratorCommandHandler> logger;
+        private readonly IKafkaProducerService kafkaProducerService;
 
-        public MT103MessageGeneratorCommandHandler(ILogger<MT103MessageGeneratorCommandHandler> logger)
+        public MT103MessageGeneratorCommandHandler(ILogger<MT103MessageGeneratorCommandHandler> logger,IKafkaProducerService kafkaProducerService)
         {
             this.logger = logger;
+            this.kafkaProducerService = kafkaProducerService;
         }
         public async Task<int> Handle(MT103MessageGeneratorCommand command, CancellationToken cancellationToken)
         {
@@ -27,6 +29,8 @@ namespace SwiftApplicationAPI.Queries.GetSwiftMessage
             var filePath = Path.Combine(baseDirectory, fileName);
             File.WriteAllText(filePath, command.MT103model.ToString());
             logger.LogInformation($"Saved in {filePath} and the name of the file is messageFiles");
+            logger.LogInformation("Sending message through Kafka");
+            await kafkaProducerService.SendMessageAsync("swift-messages", filePath);
             return 1;
         }
     }

@@ -26,6 +26,7 @@ namespace SwiftApplicationAPI
             services.AddSingleton<SWIFTMessagesDataContext>();
             services.AddSingleton<ISwiftParserService<MT799Model>, MT799ParserService>();
             services.AddSingleton<ISwiftParserService<MT103Model>, MT103ParserService>();
+            services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
             services.AddScoped<ISwiftMessageRepository, SwiftMessageRepository>();
 
 
