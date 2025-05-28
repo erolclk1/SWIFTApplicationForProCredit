@@ -6,9 +6,11 @@ using SwiftApplicationAPI.Services;
 using MediatR;
 using SwiftApplicationAPI.Queries.GetSwiftMessage;
 using SwiftApplicationAPI.Models.ParseMTModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SwiftApplicationAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class SwiftController : ControllerBase

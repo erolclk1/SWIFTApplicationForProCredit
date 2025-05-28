@@ -1,4 +1,4 @@
-﻿namespace SwiftApplicationAPI.Services
+﻿namespace SwiftApplicationAPI.Services.KafkaServices
 {
     public interface IKafkaProducerService
     {

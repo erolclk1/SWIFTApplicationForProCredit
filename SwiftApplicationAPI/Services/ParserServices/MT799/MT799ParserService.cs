@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using SwiftApplicationAPI.Models.ParseMTModels;
 
-namespace SwiftApplicationAPI.Services
+namespace SwiftApplicationAPI.Services.ParserServices.MT799
 {
     public class MT799ParserService : ISwiftParserService<MT799Model>
     {
@@ -51,8 +51,8 @@ namespace SwiftApplicationAPI.Services
             {
                 var content = block.Substring(identifier.Length + 2).Trim();
                 if (content.EndsWith("}"))
-                { 
-                content = content.Substring(0, content.Length - 1);
+                {
+                    content = content.Substring(0, content.Length - 1);
                 }
                 return content.Trim();
             }

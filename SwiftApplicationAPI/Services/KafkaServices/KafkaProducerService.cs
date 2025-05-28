@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace SwiftApplicationAPI.Services
+namespace SwiftApplicationAPI.Services.KafkaServices
 {
     public class KafkaProducerService : IKafkaProducerService
     {

@@ -7,9 +7,11 @@ using MediatR;
 using SwiftApplicationAPI.Queries.GetSwiftMessage;
 using SwiftApplicationAPI.Models.ParseMTModels;
 using SwiftApplicationAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SwiftApplicationAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class MTSwiftGeneratorController : ControllerBase
