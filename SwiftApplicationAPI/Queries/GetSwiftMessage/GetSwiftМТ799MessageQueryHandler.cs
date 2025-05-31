@@ -6,19 +6,19 @@ using System.Text;
 
 namespace SwiftApplicationAPI.Queries.GetSwiftMessage
 {
-    public record GetSwiftMessageQuery(IFormFile swiftFile) : IRequest<MT799Model>;
+    public record GetSwiftМТ799MessageQuery(IFormFile swiftFile) : IRequest<MT799Model>;
 
-    public class GetSwiftMessageQueryHandler : IRequestHandler<GetSwiftMessageQuery, MT799Model>
+    public class GetSwiftМТ799MessageQueryHandler : IRequestHandler<GetSwiftМТ799MessageQuery, MT799Model>
     {
         private readonly ISwiftParserService<MT799Model> swiftParserService;
-        private readonly ILogger<GetSwiftMessageQueryHandler> logger;
+        private readonly ILogger<GetSwiftМТ799MessageQueryHandler> logger;
 
-        public GetSwiftMessageQueryHandler(ISwiftParserService<MT799Model> swiftParserService, ILogger<GetSwiftMessageQueryHandler> logger)
+        public GetSwiftМТ799MessageQueryHandler(ISwiftParserService<MT799Model> swiftParserService, ILogger<GetSwiftМТ799MessageQueryHandler> logger)
         {
             this.swiftParserService = swiftParserService;
             this.logger = logger;
         }
-        public async Task<MT799Model> Handle(GetSwiftMessageQuery query, CancellationToken cancellationToken)
+        public async Task<MT799Model> Handle(GetSwiftМТ799MessageQuery query, CancellationToken cancellationToken)
         {
             logger.LogInformation("Reading through the SWIFT File");
 

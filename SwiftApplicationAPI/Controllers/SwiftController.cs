@@ -25,12 +25,12 @@ namespace SwiftApplicationAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<MT799Model> GetSwiftMessage(IFormFile swiftInput)
+        public async Task<MT799Model> GetSwift799Message(IFormFile swiftInput)
         {
             try
             {
                 logger.LogInformation("Sending the GetSwiftMessageQuery");
-                var result = await mediator.Send(new GetSwiftMessageQuery(swiftInput));
+                var result = await mediator.Send(new GetSwiftÃ“799MessageQuery(swiftInput));
                 return result;
             }
             catch (Exception ex)

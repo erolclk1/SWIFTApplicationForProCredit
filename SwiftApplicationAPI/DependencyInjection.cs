@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Confluent.Kafka;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SwiftApplicationAPI.Services.RepositoryQueries;
+using SwiftApplicationAPI.Services.NotifactionService;
 
 namespace SwiftApplicationAPI
 {
@@ -41,11 +43,12 @@ namespace SwiftApplicationAPI
             services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
             services.AddSingleton<ICurrencyConverterService, CurrencyConverterService>();
             services.AddScoped<ISwiftMessageRepository, SwiftMessageRepository>();
+            services.AddSingleton<IUpdateAmountRepository, UpdateAmountRepository>();
             //Bearer token extractor from the background Services
             services.AddHttpContextAccessor();
             services.AddSingleton<IHttpContextTokenAccessorService, HttpContextTokenAccessorService>();
             //Kafka background host Service
-            services.AddHostedService<KafkaConsumerService>();
+            services.AddHostedService<KafkaConsumerM103Service>();
             //Currency exchanger
             services.AddHttpClient();
             services.AddSingleton<IUserServices, UserServices>();
@@ -66,6 +69,11 @@ namespace SwiftApplicationAPI
                 };
             });
             services.AddAuthorization();
+            services.AddSignalR();
+            //Notification Service
+            services.AddSingleton<INotifactionService, NotifactionService>();
+            //Background service for the m799 parser
+            services.AddHostedService<KafkaConsumer799Service>();
 
 
 

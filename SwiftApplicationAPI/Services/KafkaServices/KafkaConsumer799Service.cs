@@ -1,53 +1,54 @@
 ﻿
 using Confluent.Kafka;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using SwiftApplicationAPI.Models.ParseMTModels;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using SwiftApplicationAPI.Services.AuthenticationServices;
 using SwiftApplicationAPI.Services.Currency;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
+using SwiftApplicationAPI.Services.RepositoryQueries;
+using Microsoft.AspNetCore.SignalR;
+using SwiftApplicationAPI.SignalR;
 
 namespace SwiftApplicationAPI.Services.KafkaServices
 {
-    public class KafkaConsumerService : BackgroundService
+    public class KafkaConsumer799Service : BackgroundService
     {
-        private readonly ILogger<KafkaConsumerService> logger;
+        private readonly ILogger<KafkaConsumer799Service> logger;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly ICurrencyConverterService converter;
         private readonly IHttpContextTokenAccessorService httpContextTokenAccessor;
+        private readonly IUpdateAmountRepository updateAmountRepository;
+        private readonly IHubContext<NotificationHub> hubContext;
 
-        public KafkaConsumerService(
-            ILogger<KafkaConsumerService> logger, 
-            IHttpClientFactory httpClientFactory, 
-            ICurrencyConverterService converter,
-            IHttpContextTokenAccessorService httpContextTokenAccessor)
+        public KafkaConsumer799Service(
+            ILogger<KafkaConsumer799Service> logger,
+            IHttpContextTokenAccessorService httpContextTokenAccessor,
+            IHttpClientFactory httpClientFactory,
+            IUpdateAmountRepository updateAmountRepository,
+            IHubContext<NotificationHub> hubContext)
         {
             this.logger = logger;
             this.httpClientFactory = httpClientFactory;
-            this.converter = converter;
             this.httpContextTokenAccessor = httpContextTokenAccessor;
+            this.updateAmountRepository = updateAmountRepository;
+            this.hubContext = hubContext;
         }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await Task.Delay(5000, stoppingToken);
 
             var config = new ConsumerConfig
             {
                 BootstrapServers = "localhost:9092",
-                GroupId = "swift-parser-consumer",
+                GroupId = "swift799",
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
-
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
-            consumer.Subscribe("swift-messages");
-            var mt103Model = await consumerGetParsedMessage(consumer, stoppingToken);
-            var convertedCurrency = await converter.extractMoneyAndConvert(mt103Model);
-            convertedCurrency = Math.Round(convertedCurrency, 2);
-        }
+            consumer.Subscribe("mt799-swift-message");
+            var mT799Model = await consumerGetParsedMessage(consumer, stoppingToken);
+            await hubContext.Clients.All.SendAsync("ReceiveNotification", mT799Model);
 
-        private async Task<MT103Model> consumerGetParsedMessage(IConsumer<Ignore, string> consumer, CancellationToken stoppingToken)
+        }
+        private async Task<MT799Model> consumerGetParsedMessage(IConsumer<Ignore, string> consumer, CancellationToken stoppingToken)
         {
             try
             {
@@ -69,8 +70,8 @@ namespace SwiftApplicationAPI.Services.KafkaServices
 
                     try
                     {
-                        var response = await client.PostAsync("https://localhost:7220/Swift/GetSwift103Message", content);
-                        var resultModel = await response.Content.ReadFromJsonAsync<MT103Model>(stoppingToken);
+                        var response = await client.PostAsync("https://localhost:7220/Swift/GetSwift799Message", content);
+                        var resultModel = await response.Content.ReadFromJsonAsync<MT799Model>(stoppingToken);
                         return resultModel;
                     }
                     catch (Exception ex)

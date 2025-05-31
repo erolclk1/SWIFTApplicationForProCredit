@@ -151,8 +151,8 @@
   },
   {
     "ContainingType": "SwiftApplicationAPI.Controllers.SwiftController",
-    "Method": "GetSwiftMessage",
-    "RelativePath": "Swift/GetSwiftMessage",
+    "Method": "GetSwift799Message",
+    "RelativePath": "Swift/GetSwift799Message",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

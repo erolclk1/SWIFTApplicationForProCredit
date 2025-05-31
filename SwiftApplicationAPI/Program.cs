@@ -6,6 +6,7 @@ using System;
 using SwiftApplicationAPI;
 using SwiftApplicationAPI.Services;
 using Microsoft.OpenApi.Models;
+using SwiftApplicationAPI.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,17 @@ Log.Information("The application is starting");
 
 
 var app = builder.Build();
+app.UseRouting();
+//Push Notifications for the MT799 STATUS MESSAGE
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+});
 
 //Creating Database
 using (var scope = app.Services.CreateScope())
@@ -63,10 +75,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

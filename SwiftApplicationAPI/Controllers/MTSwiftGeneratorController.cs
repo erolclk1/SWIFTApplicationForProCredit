@@ -30,30 +30,30 @@ namespace SwiftApplicationAPI.Controllers
         {
             try
             {
-                logger.LogInformation("Sending a SwiftMessageInsertingCommand");
+                logger.LogInformation("Generating Swift103Message");
                 var result = await mediator.Send(new MT103MessageGeneratorCommand(swiftInput));
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError("Something went wrong in calling the method SWIFTMessageInserting", ex);
+                logger.LogError("Something went wrong in calling the method M103Generator", ex);
                 throw new Exception(ex.Message);
             }
 
         }
 
         [HttpPost]
-        public async Task<int> SWIFTMT799MessageGenerator(MT799ModelDTO swiftInput)
+        public async Task<int> SWIFTMT799MessageGenerator([FromBody] MT799ModelDTO swiftInput)
         {
             try
             {
-                logger.LogInformation("Sending a SwiftMessageInsertingCommand");
+                logger.LogInformation("Generating Swift799Message");
                 var result = await mediator.Send(new MT799MessageGeneratorCommand(swiftInput));
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError("Something went wrong in calling the method SWIFTMessageInserting", ex);
+                logger.LogError("Something went wrong in calling the method M799Generator", ex);
                 throw new Exception(ex.Message);
             }
 
