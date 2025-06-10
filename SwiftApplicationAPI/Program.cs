@@ -45,9 +45,21 @@ builder.Services.AddSwaggerGen(c => {
 builder.Services.AddWebServices(builder.Configuration);
 Log.Information("The application is starting");
 
+//ADD CORS POLICIES
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 app.UseRouting();
+
+app.UseCors();
 //Push Notifications for the MT799 STATUS MESSAGE
 app.UseAuthentication();
 

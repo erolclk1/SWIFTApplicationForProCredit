@@ -27,7 +27,7 @@ namespace SwiftApplicationAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Register([FromQuery]RegisterUserDTO user)
+        public async Task<string> Register([FromBody]RegisterUserDTO user)
         {
             try
             {
@@ -44,12 +44,12 @@ namespace SwiftApplicationAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Login(string email,string password)
+        public async Task<string> Login([FromBody]LoginDTO user)
         {
             try
             {
                 logger.LogInformation("Sending a SwiftMessageInsertingCommand");
-                var result = await mediator.Send(new LoginUserCommand(email,password));
+                var result = await mediator.Send(new LoginUserCommand(user.Email,user.Password));
                 return result;
             }
             catch (Exception ex)
