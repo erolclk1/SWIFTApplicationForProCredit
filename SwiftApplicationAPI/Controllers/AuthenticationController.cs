@@ -54,7 +54,7 @@ namespace SwiftApplicationAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Something went wrong in calling the method SWIFTMessageInserting", ex);
+                logger.LogError("Something went wrong logging of the user", ex);
                 throw new Exception(ex.Message);
             }
 

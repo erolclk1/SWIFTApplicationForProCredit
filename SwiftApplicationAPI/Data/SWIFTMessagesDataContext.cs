@@ -43,6 +43,15 @@ namespace SwiftApplicationAPI.Data
                 Currency TEXT NOT NULL,
                 CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS BankAccounts (
+                AccountId INTEGER PRIMARY KEY AUTOINCREMENT,
+                UserId INTEGER NOT NULL UNIQUE,
+                IBANOrBIC TEXT NOT NULL,
+                Balance DECIMAL(18, 4) NOT NULL DEFAULT 0,
+                Currency TEXT NOT NULL,
+                CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+            );
             CREATE TABLE IF NOT EXISTS Transactions (
                 TransactionId INTEGER PRIMARY KEY AUTOINCREMENT,
                 SenderId INTEGER NOT NULL,

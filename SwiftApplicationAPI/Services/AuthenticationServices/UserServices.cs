@@ -53,6 +53,15 @@ namespace SwiftApplicationAPI.Services.AuthenticationServices
             string sql = @"INSERT INTO Users (Name, Email, IBANOrBIC, CountryCode, Currency, Balance, PasswordHash)
                VALUES (@Name, @Email, @IBANOrBIC, @CountryCode, @Currency, @Balance, @PasswordHash)";
             var dbexecute = await db.ExecuteAsync(sql, userModel);
+
+            var bankModel = new BankModel
+            {
+                UserId = 
+                IBANOrBIC = ibanOrBic,
+                Currency = currency,
+                Balance = 0
+            };
+
             return (true, "Registering User was successful");
         }
 
