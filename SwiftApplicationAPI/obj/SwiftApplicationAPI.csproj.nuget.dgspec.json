@@ -74,6 +74,10 @@
               "target": "Package",
               "version": "[8.0.8, )"
             },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.4.0, )"
+            },
             "SQLitePCLRaw.bundle_e_sqlite3": {
               "target": "Package",
               "version": "[2.1.9, )"

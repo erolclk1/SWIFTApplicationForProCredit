@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SwiftApplicationAPI.Data;
@@ -27,42 +28,58 @@ namespace SwiftApplicationAPI.Services.AuthenticationServices
         public async Task<(bool Success, string? Message)> RegisterUserAsync(RegisterUserDTO user)
         {
             using var db = dataContext.CreateConnection();
-            var existingUser = await db.QueryFirstOrDefaultAsync<UserModel>(
-                     "SELECT * FROM Users WHERE Email = @Email",
-                     new { Email = user.Email }
-                 );
-            if (existingUser != null) return (false,"User already exist");
-
-            var isEuropean = BankingHelper.IsEuropean(user.CountryCode);
-            var ibanOrBic = isEuropean
-                ? BankingHelper.GenerateIBAN(user.CountryCode)
-                : BankingHelper.GenerateBIC(user.CountryCode);
-            var currency = BankingHelper.GetCurrency(user.CountryCode);
-
-            var userModel = new UserModel
+            db.Open();
+            using (var transaction = db.BeginTransaction())
             {
-                Name = user.Name,
-                Email = user.Email,
-                PasswordHash = passwordHasher.HashPassword(null!, user.Password),
-                CountryCode = user.CountryCode.ToUpper(),
-                IBANOrBIC = ibanOrBic,
-                Currency = currency,
-                CreatedAt = DateTime.UtcNow,
-                Balance = 0
-            };
-            string sql = @"INSERT INTO Users (Name, Email, IBANOrBIC, CountryCode, Currency, Balance, PasswordHash)
-               VALUES (@Name, @Email, @IBANOrBIC, @CountryCode, @Currency, @Balance, @PasswordHash)";
-            var dbexecute = await db.ExecuteAsync(sql, userModel);
+                try
+                {
+                    var existingUser = await db.QueryFirstOrDefaultAsync<UserModel>(
+                         "SELECT * FROM Users WHERE Email = @Email",
+                         new { Email = user.Email }
+                     ,transaction);
+                    if (existingUser != null) return (false, "User already exist");
 
-            var bankModel = new BankModel
-            {
-                UserId = 
-                IBANOrBIC = ibanOrBic,
-                Currency = currency,
-                Balance = 0
-            };
+                    var isEuropean = BankingHelper.IsEuropean(user.CountryCode);
+                    var ibanOrBic = isEuropean
+                        ? BankingHelper.GenerateIBAN(user.CountryCode)
+                        : BankingHelper.GenerateBIC(user.CountryCode);
+                    var currency = BankingHelper.GetCurrency(user.CountryCode);
 
-            return (true, "Registering User was successful");
+                    var userModel = new UserModel
+                    {
+                        Name = user.Name,
+                        Email = user.Email,
+                        PasswordHash = passwordHasher.HashPassword(null!, user.Password),
+                        CountryCode = user.CountryCode.ToUpper(),
+                        CreatedAt = DateTime.UtcNow,
+                    };
+                    string sql = @"INSERT INTO Users (Name, Email, CountryCode, CreatedAt, PasswordHash)
+               VALUES (@Name, @Email, @CountryCode, @CreatedAt, @PasswordHash);
+               SELECT LAST_INSERT_ID();";
+                    var dbexecute = await db.QueryAsync<int>(sql, userModel, transaction);
+
+                    var bankModel = new BankModel
+                    {
+                        UserId = dbexecute.FirstOrDefault(),
+                        IBANOrBIC = ibanOrBic,
+                        Currency = currency,
+                        Balance = 0,
+                        CreatedAt = DateTime.UtcNow,
+                    };
+                    string sql2 = @"INSERT INTO BankAccounts (UserId, IBANOrBIC, Currency, Balance, CreatedAt)
+               VALUES (@UserId, @IBANOrBIC, @Currency, @Balance, @CreatedAt);";
+                    var dbexecute2 = await db.ExecuteAsync(sql2, bankModel, transaction);
+
+                    transaction.Commit();
+                    db.Close();
+                    return (true, "Registering User was successful");
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Something went wrong : " + ex);
+                }
+            }
         }
 
         public async Task<string> Login(string email, string password)

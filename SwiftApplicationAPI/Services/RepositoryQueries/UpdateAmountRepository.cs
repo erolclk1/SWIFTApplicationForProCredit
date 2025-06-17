@@ -29,14 +29,14 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 {
                     try
                     {
-                        var isSenderUpdateSuccessful = await updateSenderAmount(decimal.Parse(sendAmount), senderIbanOrBic, db);
+                        var isSenderUpdateSuccessful = await updateSenderAmount(decimal.Parse(sendAmount), senderIbanOrBic, db, transaction);
                         if (!isSenderUpdateSuccessful.Success)
                         {
                             transaction.Rollback();
                             db.Close();
                             return (false, $"Transaction failed with message : {isSenderUpdateSuccessful.Message}");
                         }
-                        var isRecieverUpdateSucessful = await updateRecieverAmount(convertedAmount, recieverIbanOrBic, db);
+                        var isRecieverUpdateSucessful = await updateRecieverAmount(convertedAmount, recieverIbanOrBic, db, transaction);
                         if (!isRecieverUpdateSucessful.Success)
                         {
                             transaction.Rollback();
@@ -54,21 +54,21 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 }
             }
         }
-        public async Task<(bool Success, string Message)> updateRecieverAmount(decimal convertedAmount, string IBanOrBic, IDbConnection db)
+        public async Task<(bool Success, string Message)> updateRecieverAmount(decimal convertedAmount, string IBanOrBic, IDbConnection db,IDbTransaction transaction)
         {
             try
             {
-                var reciever = await db.QueryFirstOrDefaultAsync<UserModel>(
+                var reciever = await db.QueryFirstOrDefaultAsync<BankModel>(
                          "SELECT * FROM Users WHERE IBANOrBIC = @IBANOrBIC",
                          new { IBANOrBIC = IBanOrBic }
-                     );
+                     , transaction);
                 if (reciever == null)
                 {
                     return (false, "Unable to find the reciever user");
                 }
                 reciever.Balance += convertedAmount;
                 var sql = "UPDATE Users SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
-                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = reciever.Balance, IBANOrBIC = IBanOrBic });
+                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = reciever.Balance, IBANOrBIC = IBanOrBic },transaction);
                 if (rowsAffected > 0)
                 {
                     return (true, $"Successfuly transfer the amount of converted money to the reciever.Reciever has {reciever.Balance}{reciever.Currency} , recieved {convertedAmount}{reciever.Currency}");
@@ -86,14 +86,14 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
             }
         }
 
-        public async Task<(bool Success, string Message)> updateSenderAmount(decimal ammount, string IBanOrBic, IDbConnection db)
+        public async Task<(bool Success, string Message)> updateSenderAmount(decimal ammount, string IBanOrBic, IDbConnection db,IDbTransaction transaction)
         {
             try
             {
-                var sender = await db.QueryFirstOrDefaultAsync<UserModel>(
+                var sender = await db.QueryFirstOrDefaultAsync<BankModel>(
                          "SELECT * FROM Users WHERE IBANOrBIC = @IBANOrBIC",
                          new { IBANOrBIC = IBanOrBic }
-                     );
+                     , transaction);
                 if (sender == null)
                 {
                     return (false, "Unable to find the sender user");
@@ -104,7 +104,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 }
                 sender.Balance -= ammount;
                 var sql = "UPDATE Users SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
-                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = sender.Balance, IBANOrBIC = IBanOrBic });
+                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = sender.Balance, IBANOrBIC = IBanOrBic },transaction);
                 if (rowsAffected > 0)
                 {
                     return (true, $"Successfuly taken the amount of money of the sender.Left {sender.Balance}{sender.Currency} , sended {ammount}{sender.Currency}");
