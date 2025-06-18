@@ -59,7 +59,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
             try
             {
                 var reciever = await db.QueryFirstOrDefaultAsync<BankModel>(
-                         "SELECT * FROM Users WHERE IBANOrBIC = @IBANOrBIC",
+                         "SELECT * FROM BankAccounts WHERE IBANOrBIC = @IBANOrBIC",
                          new { IBANOrBIC = IBanOrBic }
                      , transaction);
                 if (reciever == null)
@@ -67,7 +67,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                     return (false, "Unable to find the reciever user");
                 }
                 reciever.Balance += convertedAmount;
-                var sql = "UPDATE Users SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
+                var sql = "UPDATE BankAccounts SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
                 var rowsAffected = await db.ExecuteAsync(sql, new { Balance = reciever.Balance, IBANOrBIC = IBanOrBic },transaction);
                 if (rowsAffected > 0)
                 {
@@ -91,7 +91,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
             try
             {
                 var sender = await db.QueryFirstOrDefaultAsync<BankModel>(
-                         "SELECT * FROM Users WHERE IBANOrBIC = @IBANOrBIC",
+                         "SELECT * FROM BankAccounts WHERE IBANOrBIC = @IBANOrBIC",
                          new { IBANOrBIC = IBanOrBic }
                      , transaction);
                 if (sender == null)
@@ -103,7 +103,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                     return (false, "Insufficient funds to complete the transaction.");
                 }
                 sender.Balance -= ammount;
-                var sql = "UPDATE Users SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
+                var sql = "UPDATE BankAccounts SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
                 var rowsAffected = await db.ExecuteAsync(sql, new { Balance = sender.Balance, IBANOrBIC = IBanOrBic },transaction);
                 if (rowsAffected > 0)
                 {

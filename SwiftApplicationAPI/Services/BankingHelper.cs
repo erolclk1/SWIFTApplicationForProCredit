@@ -9,7 +9,7 @@
 
         private static readonly Dictionary<string, string> CountryCurrencyMap = new()
     {
-        { "BG", "BGN" }, { "DE", "EUR" }, { "US", "USD" }, { "UK", "GBP" },
+        { "BG", "BGN" }, { "DE", "EUR" }, { "US", "USD" }, { "UK", "GBP" }, {"IN","INR" },
     };
         private static readonly Dictionary<string, string> CountryBICMap = new()
         {
@@ -45,7 +45,7 @@
             var random = new Random();
             var accountNumber = random.Next(100, 999);
             var bankCode = GetBIC(countryCode);
-            return $"{bankCode}{countryCode.ToUpper()}{bankCode}";
+            return $"{bankCode}{countryCode.ToUpper()}{accountNumber}";
         }
 
         public static string GetCurrency(string countryCode) {

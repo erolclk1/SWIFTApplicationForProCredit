@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr';
 
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl('https://localhost:7220/notificationhub')
+    .withUrl('https://localhost:7220/notificationHub')
     .withAutomaticReconnect()
     .build();
 
