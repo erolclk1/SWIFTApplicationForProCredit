@@ -1,8 +1,112 @@
 [
   {
+    "ContainingType": "SwiftApplicationAPI.Controllers.AuthenticationController",
+    "Method": "Login",
+    "RelativePath": "Authentication/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "SwiftApplicationAPI.Models.CommandDtos.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SwiftApplicationAPI.Controllers.AuthenticationController",
+    "Method": "Register",
+    "RelativePath": "Authentication/Register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "SwiftApplicationAPI.Models.CommandDtos.RegisterUserDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SwiftApplicationAPI.Controllers.MTSwiftGeneratorController",
+    "Method": "SWIFTMT103MessageGenerator",
+    "RelativePath": "MTSwiftGenerator/SWIFTMT103MessageGenerator",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "swiftInput",
+        "Type": "SwiftApplicationAPI.Models.MT103ModelDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SwiftApplicationAPI.Controllers.MTSwiftGeneratorController",
+    "Method": "SWIFTMT799MessageGenerator",
+    "RelativePath": "MTSwiftGenerator/SWIFTMT799MessageGenerator",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "swiftInput",
+        "Type": "SwiftApplicationAPI.Models.MT799ModelDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SwiftApplicationAPI.Controllers.SwiftController",
-    "Method": "GetSwiftMessage",
-    "RelativePath": "Swift/GetSwiftMessage",
+    "Method": "GetSwift103Message",
+    "RelativePath": "Swift/GetSwift103Message",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -15,7 +119,33 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "SwiftApplicationAPI.Models.MT799Model",
+        "Type": "SwiftApplicationAPI.Models.ParseMTModels.MT103Model",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SwiftApplicationAPI.Controllers.SwiftController",
+    "Method": "GetSwift799Message",
+    "RelativePath": "Swift/GetSwift799Message",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "swiftInput",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SwiftApplicationAPI.Models.ParseMTModels.MT799Model",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -5,6 +5,8 @@ using SwiftApplicationAPI.Data;
 using System;
 using SwiftApplicationAPI;
 using SwiftApplicationAPI.Services;
+using Microsoft.OpenApi.Models;
+using SwiftApplicationAPI.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +15,61 @@ Batteries.Init();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => {
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJI...\"",
+    });
 
-builder.Services.AddWebServices();
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+builder.Services.AddWebServices(builder.Configuration);
 Log.Information("The application is starting");
 
+//ADD CORS POLICIES
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173").AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
+app.UseRouting();
+
+app.UseCors();
+//Push Notifications for the MT799 STATUS MESSAGE
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+});
 
 //Creating Database
 using (var scope = app.Services.CreateScope())
@@ -37,8 +87,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

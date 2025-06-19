@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using SwiftApplicationAPI.Controllers;
-using SwiftApplicationAPI.Models;
+using SwiftApplicationAPI.Models.ParseMTModels;
 using SwiftApplicationAPI.Services;
+using SwiftApplicationAPI.Services.ParserServices;
 using System.Text;
 using System.Windows.Input;
 
@@ -11,11 +12,11 @@ namespace SwiftApplicationAPI.Queries.GetSwiftMessage
 
     public class SWIFTMessageInsertingCommandHandler : IRequestHandler<SWIFTMessageInsertingCommand, int>
     {
-        private readonly ISwiftParserService swiftParserService;
+        private readonly ISwiftParserService<MT799Model> swiftParserService;
         private readonly ISwiftMessageRepository swiftMessageRepository;
         private readonly ILogger<SWIFTMessageInsertingCommandHandler> logger;
 
-        public SWIFTMessageInsertingCommandHandler(ISwiftParserService swiftParserService, ISwiftMessageRepository swiftMessageRepository, ILogger<SWIFTMessageInsertingCommandHandler> logger)
+        public SWIFTMessageInsertingCommandHandler(ISwiftParserService<MT799Model> swiftParserService, ISwiftMessageRepository swiftMessageRepository, ILogger<SWIFTMessageInsertingCommandHandler> logger)
         {
             this.swiftParserService = swiftParserService;
             this.swiftMessageRepository = swiftMessageRepository;

@@ -1,4 +1,4 @@
-﻿namespace SwiftApplicationAPI.Models
+﻿namespace SwiftApplicationAPI.Models.ParseMTModels
 {
     public class MT799Model
     {

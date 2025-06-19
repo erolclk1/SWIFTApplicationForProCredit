@@ -1,24 +1,24 @@
 ﻿using MediatR;
 using SwiftApplicationAPI.Controllers;
-using SwiftApplicationAPI.Models;
-using SwiftApplicationAPI.Services;
+using SwiftApplicationAPI.Models.ParseMTModels;
+using SwiftApplicationAPI.Services.ParserServices;
 using System.Text;
 
 namespace SwiftApplicationAPI.Queries.GetSwiftMessage
 {
-    public record GetSwiftMessageQuery(IFormFile swiftFile) : IRequest<MT799Model>;
+    public record GetSwiftMT103MessageQuery(IFormFile swiftFile) : IRequest<MT103Model>;
 
-    public class GetSwiftMessageQueryHandler : IRequestHandler<GetSwiftMessageQuery, MT799Model>
+    public class GetSwiftMT103MessageQueryHandler : IRequestHandler<GetSwiftMT103MessageQuery, MT103Model>
     {
-        private readonly ISwiftParserService swiftParserService;
-        private readonly ILogger<GetSwiftMessageQueryHandler> logger;
+        private readonly ISwiftParserService<MT103Model> swiftParserService;
+        private readonly ILogger<GetSwiftMT103MessageQueryHandler> logger;
 
-        public GetSwiftMessageQueryHandler(ISwiftParserService swiftParserService, ILogger<GetSwiftMessageQueryHandler> logger)
+        public GetSwiftMT103MessageQueryHandler(ISwiftParserService<MT103Model> swiftParserService, ILogger<GetSwiftMT103MessageQueryHandler> logger)
         {
             this.swiftParserService = swiftParserService;
             this.logger = logger;
         }
-        public async Task<MT799Model> Handle(GetSwiftMessageQuery query, CancellationToken cancellationToken)
+        public async Task<MT103Model> Handle(GetSwiftMT103MessageQuery query, CancellationToken cancellationToken)
         {
             logger.LogInformation("Reading through the SWIFT File");
 

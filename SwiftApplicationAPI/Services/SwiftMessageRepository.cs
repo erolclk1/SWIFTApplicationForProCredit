@@ -2,7 +2,7 @@
 using Dapper;
 using SwiftApplicationAPI.Data;
 using System.Data;
-using SwiftApplicationAPI.Models;
+using SwiftApplicationAPI.Models.ParseMTModels;
 
 namespace SwiftApplicationAPI.Services
 {

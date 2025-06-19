@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {}
+    "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {
+    "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
         "projectName": "SwiftApplicationAPI",
-        "projectPath": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
+        "projectPath": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\SwiftApplicationAPI.csproj",
         "packagesPath": "C:\\Users\\Erol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Erol\\Desktop\\с\\SWIFTApplicationForProCredit\\SwiftApplicationAPI\\obj\\",
+        "outputPath": "C:\\Users\\Erol\\source\\repos\\SwiftApplicationProgram\\SwiftApplicationAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Confluent.Kafka": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            },
             "Dapper": {
               "target": "Package",
               "version": "[2.1.35, )"
@@ -58,9 +62,21 @@
               "target": "Package",
               "version": "[12.4.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.16, )"
+            },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.4.0, )"
             },
             "SQLitePCLRaw.bundle_e_sqlite3": {
               "target": "Package",
