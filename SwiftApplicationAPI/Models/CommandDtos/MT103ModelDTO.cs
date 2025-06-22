@@ -20,8 +20,7 @@ namespace SwiftApplicationAPI.Models
         public string? UserHeader { get => _userHeader; set => _userHeader = "{3:{113:TESTMT103}}"; }   // block 3
         public string? TransactionReference
         {
-            get => _transactionRefHeader;
-            set => _transactionRefHeader = $"TRX{random.Next(1000000000, 999999999).ToString()}";
+            get => $"TRX{random.Next(100000000, 999999999).ToString()}";
         }
         public string? BankOperationCode { get => "CRED"; }
         public string ValueDateCurrencyAmount

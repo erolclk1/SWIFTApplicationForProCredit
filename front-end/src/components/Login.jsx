@@ -17,6 +17,14 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/Authentication/Login', form);
+      if (response.status === 204) {
+    Swal.fire({
+      title: "Login failed",
+      text: "No account matches the provided credentials.",
+      icon: "warning"
+    });
+    return;
+  }
       setToken(response.data);
       navigate('/transaction');
     } catch (err) {

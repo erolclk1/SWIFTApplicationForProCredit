@@ -43,14 +43,20 @@ namespace SwiftApplicationAPI.Services.Currency
 
         public async Task<decimal> ConvertAsync(string fromCurrency, string toCurrency, decimal amount)
         {
-            var url = $"{baseUrl}/latest?apikey={apiKey}&currencies={toCurrency}&base_currency={fromCurrency}";
-            var response = await httpClient.GetFromJsonAsync<ApiResponse>(url);
+            try {
+                var url = $"{baseUrl}/latest?apikey={apiKey}&currencies={toCurrency}&base_currency={fromCurrency}";
+                var response = await httpClient.GetFromJsonAsync<ApiResponse>(url);
 
-            if (response == null || response.Data == null || !response.Data.ContainsKey(toCurrency))
+                if (response == null || response.Data == null || !response.Data.ContainsKey(toCurrency))
+                    throw new Exception("Failed to get exchange rate");
+
+                var rate = response.Data[toCurrency];
+                return amount * rate;
+            }
+            catch(Exception ex)
+            {
                 throw new Exception("Failed to get exchange rate");
-
-            var rate = response.Data[toCurrency];
-            return amount * rate;
+            }
         }
         private class ApiResponse
         {

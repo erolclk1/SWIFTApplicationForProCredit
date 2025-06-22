@@ -6,7 +6,7 @@ const LastTransactions = () => {
 
   useEffect(() => {
     // Replace with your real API endpoint
-    axios.get('/api/account/last-transactions')
+    axios.get('/Swift/GetTransactionHistory')
       .then(res => setTxs(res.data))
       .catch(() => setTxs([]));
   }, []);
@@ -18,11 +18,12 @@ const LastTransactions = () => {
         <table className="table table-striped table-hover mt-3">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Date of transaction</th>
+              <th>TransactionID</th>
+              <th>Your Name</th>
               <th>Amount</th>
               <th>Currency</th>
-              <th>Recipient</th>
-              <th>Status</th>
+              <th>Other Party Name</th>
             </tr>
           </thead>
           <tbody>
@@ -33,12 +34,15 @@ const LastTransactions = () => {
             )}
             {txs.map((tx, i) => (
               <tr key={i}>
-                <td>{tx.date}</td>
-                <td>{tx.amount}</td>
-                <td>{tx.currency}</td>
-                <td>{tx.recipient}</td>
-                <td>{tx.status}</td>
-              </tr>
+                  <td>{new Date(tx.createdAt).toLocaleString()}</td>
+                  <td>{tx.transactionId}</td>
+                  <td>{tx.yourName}</td>
+                  <td className={tx.amount < 0 ? "text-danger" : "text-success"}>
+                    {tx.amount.toFixed(2)}
+                  </td>
+                  <td>{tx.currency}</td>
+                  <td>{tx.receiverName}</td>
+                </tr>
             ))}
           </tbody>
         </table>

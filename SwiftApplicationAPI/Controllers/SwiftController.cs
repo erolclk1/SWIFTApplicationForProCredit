@@ -7,6 +7,7 @@ using MediatR;
 using SwiftApplicationAPI.Queries.GetSwiftMessage;
 using SwiftApplicationAPI.Models.ParseMTModels;
 using Microsoft.AspNetCore.Authorization;
+using SwiftApplicationAPI.Models.CommandDtos;
 
 namespace SwiftApplicationAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace SwiftApplicationAPI.Controllers
         private readonly IMediator mediator;
         private readonly ILogger<SwiftController> logger;
 
-        public SwiftController(IMediator mediator,ILogger<SwiftController> logger)
+        public SwiftController(IMediator mediator, ILogger<SwiftController> logger)
         {
             this.mediator = mediator;
             this.logger = logger;
@@ -70,6 +71,37 @@ namespace SwiftApplicationAPI.Controllers
                 throw new Exception(ex.Message);
             }
 
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<LastTransactionDTO>> GetTransactionHistory()
+        {
+            try
+            {
+                logger.LogInformation("Getting LastTransactionHistory");
+                var result = await mediator.Send(new GetTransactionHistoryQuery());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Something went wrong in getting the history", ex);
+                throw new Exception(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<AccountInfoDTO> GetUserInfo()
+        {
+            try
+            {
+                logger.LogInformation("Getting LastTransactionHistory");
+                var result = await mediator.Send(new AccountInfoQuery());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Something went wrong in getting the history", ex);
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

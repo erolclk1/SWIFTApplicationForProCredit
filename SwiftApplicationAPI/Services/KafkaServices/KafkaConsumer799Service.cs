@@ -44,8 +44,11 @@ namespace SwiftApplicationAPI.Services.KafkaServices
             };
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
             consumer.Subscribe("mt799-swift-message");
-            var mT799Model = await consumerGetParsedMessage(consumer, stoppingToken);
-            await hubContext.Clients.All.SendAsync("ReceiveNotification", mT799Model);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var mT799Model = await consumerGetParsedMessage(consumer, stoppingToken);
+                await hubContext.Clients.All.SendAsync("ReceiveNotification", mT799Model);
+            }
 
         }
         private async Task<MT799Model> consumerGetParsedMessage(IConsumer<Ignore, string> consumer, CancellationToken stoppingToken)

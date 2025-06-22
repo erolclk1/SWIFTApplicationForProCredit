@@ -5,8 +5,7 @@ const AccountInfo = () => {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
-    // Replace with your real API endpoint
-    axios.get('/api/account/info')
+    axios.get('/Swift/GetUserInfo')
       .then(res => setInfo(res.data))
       .catch(() => setInfo(null));
   }, []);
@@ -15,10 +14,29 @@ const AccountInfo = () => {
     <div className="container mt-4">
       <h2>Account Information</h2>
       {info ? (
-        <div className="card p-4 mt-3">
-          <div><b>Account Holder:</b> {info.owner}</div>
-          <div><b>Account Number:</b> {info.accountNumber}</div>
-          <div><b>Balance:</b> {info.balance} {info.currency}</div>
+        <div className="table-responsive mt-3">
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Country Code</th>
+                <th>Balance</th>
+                <th>Currency</th>
+                <th>IBAN/BIC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{info.userName}</td>
+                <td>{info.email}</td>
+                <td>{info.countryCode}</td>
+                <td className="fw-bold">{info.balance.toFixed(2)}</td>
+                <td>{info.currency}</td>
+                <td>{info.ibanOrBic}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       ) : (
         <div>Loading...</div>
