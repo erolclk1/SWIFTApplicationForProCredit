@@ -27,11 +27,19 @@ const TransactionForm = () => {
 
         connection.off("ReceiveNotification"); // prevent duplicate handlers
         connection.on("ReceiveNotification", (message) => {
+          const isError = message.narrativeMessage.startsWith("Someting went wrong with the transaction here is the message")
           setLoading(false); // hide spinner if active
           Swal.fire({
-            title: 'Transaction Complete!',
-            text: message,
-            icon: 'success',
+            title: isError ? 'Transaction Failed' : 'Transaction Complete!',
+            html: `
+              <div style="text-align:center; font-weight:bold;">
+                ${message.transactionReference}
+              </div>
+              <div style="margin-top:10px;">
+                ${message.narrativeMessage}
+              </div>
+            `,
+            icon: isError ? 'error' : 'success',
             confirmButtonText: 'OK',
             timer: 6000,
           });
