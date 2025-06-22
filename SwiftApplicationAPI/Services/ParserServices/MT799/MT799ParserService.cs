@@ -30,6 +30,8 @@ namespace SwiftApplicationAPI.Services.ParserServices.MT799
                     Tailers = GetBlockContent(blocks, "5")
                 };
 
+                ParseBlock4Content(mtData.Text,mtData);
+
                 logger.LogInformation("Parsing Completed");
 
                 return mtData;
@@ -58,6 +60,32 @@ namespace SwiftApplicationAPI.Services.ParserServices.MT799
             }
 
             return string.Empty;
+        }
+        private void ParseBlock4Content(string block4, MT799Model mtData)
+        {
+            var tagMatches = Regex.Matches(block4, @":(\d{2}[A-Z]?):([\s\S]*?)(?=:\d{2}[A-Z]?:|$)");
+
+            var tagMap = new Dictionary<string, Action<string>>
+    {
+        { "20",  val => mtData.TransactionReference = val },
+        { "79", val => mtData.NarrativeMessage = val },
+    };
+
+            tagMatches
+                .Cast<Match>()
+                .Select(m => new
+                {
+                    Tag = m.Groups[1].Value.Trim(),
+                    Value = m.Groups[2].Value.Trim()
+                })
+                .ToList()
+                .ForEach(tag =>
+                {
+                    if (tagMap.TryGetValue(tag.Tag, out var setter))
+                    {
+                        setter(tag.Value);
+                    }
+                });
         }
     }
 }
