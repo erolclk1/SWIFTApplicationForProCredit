@@ -4,6 +4,7 @@ using SwiftApplicationAPI.Models.ParseMTModels;
 using SwiftApplicationAPI.Models.Users;
 using SwiftApplicationAPI.Services.ParserServices;
 using System.Data;
+using System.Transactions;
 
 namespace SwiftApplicationAPI.Services.RepositoryQueries
 {
@@ -43,6 +44,13 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                             db.Close();
                             return (false, $"Transaction failed with message : {isRecieverUpdateSucessful.Message}");
                         }
+                        var isTransactionHistorySuccessful = await updateTransactionHistory(mt103Message.TransactionReference, senderIbanOrBic, recieverIbanOrBic, decimal.Parse(sendAmount), convertedAmount, db, transaction);
+                        if (!isTransactionHistorySuccessful.Success)
+                        {
+                            transaction.Rollback();
+                            db.Close();
+                            return (false, $"Transaction failed with saving the history : {isRecieverUpdateSucessful.Message}");
+                        }
                         transaction.Commit();
                         db.Close();
                         return (true, "Transaction was successful");
@@ -54,7 +62,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 }
             }
         }
-        public async Task<(bool Success, string Message)> updateRecieverAmount(decimal convertedAmount, string IBanOrBic, IDbConnection db,IDbTransaction transaction)
+        public async Task<(bool Success, string Message)> updateRecieverAmount(decimal convertedAmount, string IBanOrBic, IDbConnection db, IDbTransaction transaction)
         {
             try
             {
@@ -68,7 +76,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 }
                 reciever.Balance += convertedAmount;
                 var sql = "UPDATE BankAccounts SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
-                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = reciever.Balance, IBANOrBIC = IBanOrBic },transaction);
+                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = reciever.Balance, IBANOrBIC = IBanOrBic }, transaction);
                 if (rowsAffected > 0)
                 {
                     return (true, $"Successfuly transfer the amount of converted money to the reciever.Reciever has {reciever.Balance}{reciever.Currency} , recieved {convertedAmount}{reciever.Currency}");
@@ -86,7 +94,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
             }
         }
 
-        public async Task<(bool Success, string Message)> updateSenderAmount(decimal ammount, string IBanOrBic, IDbConnection db,IDbTransaction transaction)
+        public async Task<(bool Success, string Message)> updateSenderAmount(decimal ammount, string IBanOrBic, IDbConnection db, IDbTransaction transaction)
         {
             try
             {
@@ -104,7 +112,7 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
                 }
                 sender.Balance -= ammount;
                 var sql = "UPDATE BankAccounts SET Balance = @Balance WHERE  IBANOrBIC= @IBANOrBIC";
-                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = sender.Balance, IBANOrBIC = IBanOrBic },transaction);
+                var rowsAffected = await db.ExecuteAsync(sql, new { Balance = sender.Balance, IBANOrBIC = IBanOrBic }, transaction);
                 if (rowsAffected > 0)
                 {
                     return (true, $"Successfuly taken the amount of money of the sender.Left {sender.Balance}{sender.Currency} , sended {ammount}{sender.Currency}");
@@ -118,6 +126,77 @@ namespace SwiftApplicationAPI.Services.RepositoryQueries
             {
                 return (false, ex.Message);
             }
+        }
+
+        public async Task<(bool Success, string Message)> updateTransactionHistory(string TransactionID, string SenderIBanOrBic, string RecieverstringIBanOrBic, decimal originalAmmount, decimal convertedAmount, IDbConnection db, IDbTransaction transaction)
+        {
+            try
+            {
+                var senderUserInformation = await db.QueryFirstOrDefaultAsync<BankAccountInfo>(
+                "SELECT UserId, Currency FROM BankAccounts WHERE IBANOrBIC = @IBANOrBIC",
+                new { IBANOrBIC = SenderIBanOrBic }
+            , transaction);
+                if (senderUserInformation == null)
+                {
+                    return (false, "Unable to find the sender user");
+                }
+                var recieverUserInformation = await db.QueryFirstOrDefaultAsync<BankAccountInfo>(
+                "SELECT UserId, Currency FROM BankAccounts WHERE IBANOrBIC = @IBANOrBIC",
+                new { IBANOrBIC = RecieverstringIBanOrBic }
+                , transaction);
+                if (recieverUserInformation == null)
+                {
+                    return (false, "Unable to find the sender user");
+                }
+
+                var sqlQueryTransaction = @"
+                INSERT INTO Transactions (
+                    TransactionId,
+                    SenderId,
+                    ReceiverId,
+                    RecieverAmount,
+                    RecieverCurrency,
+                    OriginalAmount,
+                    OriginalCurrency
+                )
+                VALUES (
+                    @TransactionId,
+                    @SenderId,
+                    @ReceiverId,
+                    @RecieverAmount,
+                    @RecieverCurrency,
+                    @OriginalAmount,
+                    @OriginalCurrency
+                );";
+                var rowsAffected = await db.ExecuteAsync(sqlQueryTransaction, new
+                {
+                    TransactionId = TransactionID,
+                    SenderId = senderUserInformation.UserId,
+                    ReceiverId = recieverUserInformation.UserId,
+                    RecieverAmount = convertedAmount,
+                    RecieverCurrency = recieverUserInformation.Currency,
+                    OriginalAmount = originalAmmount,
+                    OriginalCurrency = senderUserInformation.Currency,
+                },
+                    transaction);
+                if (rowsAffected > 0)
+                {
+                    return (true, $"Successfully inserted history");
+                }
+                else
+                {
+                    return (false, "Something went wrong in inserting the history");
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+        private class BankAccountInfo
+        {
+            public int UserId { get; set; }
+            public string Currency { get; set; }
         }
     }
 }

@@ -23,8 +23,8 @@ namespace SwiftApplicationAPI.Services.KafkaServices
         private readonly INotifactionService notifactionService;
 
         public KafkaConsumerM103Service(
-            ILogger<KafkaConsumerM103Service> logger, 
-            IHttpClientFactory httpClientFactory, 
+            ILogger<KafkaConsumerM103Service> logger,
+            IHttpClientFactory httpClientFactory,
             ICurrencyConverterService converter,
             IHttpContextTokenAccessorService httpContextTokenAccessor,
             IUpdateAmountRepository updateAmountRepository,
@@ -50,27 +50,36 @@ namespace SwiftApplicationAPI.Services.KafkaServices
 
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
             consumer.Subscribe("swift-messages");
-            var mt103Model = await consumerGetParsedMessage(consumer, stoppingToken);
-            var convertedCurrencyAmount = await converter.extractMoneyAndConvert(mt103Model);
-            convertedCurrencyAmount = Math.Round(convertedCurrencyAmount, 2);
-            try 
-            { 
-                var isTransactionSuccefful = await updateAmountRepository.transferTransaction(mt103Model, convertedCurrencyAmount);
-                if (isTransactionSuccefful.Success)
-                {
-                    logger.LogInformation(isTransactionSuccefful.Message);
-                    await notifactionService.sendStatusMT799Message(mt103Model, isTransactionSuccefful.Message, isTransactionSuccefful.Success);
-                }
-                else
-                {
-                    logger.LogInformation($"Someting went wrong with the transaction :{isTransactionSuccefful.Message}");
-                    await notifactionService.sendStatusMT799Message(mt103Model, isTransactionSuccefful.Message, isTransactionSuccefful.Success);
-                }
-            }
-            catch (Exception ex) 
+            while (!stoppingToken.IsCancellationRequested)
             {
-                await notifactionService.sendStatusMT799Message(mt103Model, ex.Message, false);
-                throw new Exception(ex.Message);
+                    var mt103Model = await consumerGetParsedMessage(consumer, stoppingToken);
+                try
+                {
+                    var convertedCurrencyAmount = await converter.extractMoneyAndConvert(mt103Model);
+                    convertedCurrencyAmount = Math.Round(convertedCurrencyAmount, 2);
+                    try
+                    {
+                        var isTransactionSuccefful = await updateAmountRepository.transferTransaction(mt103Model, convertedCurrencyAmount);
+                        if (isTransactionSuccefful.Success)
+                        {
+                            logger.LogInformation(isTransactionSuccefful.Message);
+                            await notifactionService.sendStatusMT799Message(mt103Model, isTransactionSuccefful.Message, isTransactionSuccefful.Success);
+                        }
+                        else
+                        {
+                            logger.LogInformation($"Someting went wrong with the transaction :{isTransactionSuccefful.Message}");
+                            await notifactionService.sendStatusMT799Message(mt103Model, isTransactionSuccefful.Message, isTransactionSuccefful.Success);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await notifactionService.sendStatusMT799Message(mt103Model, ex.Message, false);
+                    }
+                }
+                catch (Exception ex) 
+                {
+                    await notifactionService.sendStatusMT799Message(mt103Model, ex.Message, false);
+                }
             }
         }
 
