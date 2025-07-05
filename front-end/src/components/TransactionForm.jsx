@@ -25,10 +25,10 @@ const TransactionForm = () => {
           console.log("✅ SignalR Connected in TransactionForm");
         }
 
-        connection.off("ReceiveNotification"); // prevent duplicate handlers
+        connection.off("ReceiveNotification");
         connection.on("ReceiveNotification", (message) => {
           const isError = message.narrativeMessage.startsWith("Someting went wrong with the transaction here is the message")
-          setLoading(false); // hide spinner if active
+          setLoading(false);
           Swal.fire({
             title: isError ? 'Transaction Failed' : 'Transaction Complete!',
             html: `
@@ -73,7 +73,6 @@ const TransactionForm = () => {
 
     try {
       await axios.post('/MTSwiftGenerator/SWIFTMT103MessageGenerator', mt103Payload);
-      // SignalR will show the result modal when backend notifies
     } catch (err) {
       setLoading(false);
       Swal.fire({

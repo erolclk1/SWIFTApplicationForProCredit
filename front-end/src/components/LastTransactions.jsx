@@ -5,7 +5,6 @@ const LastTransactions = () => {
   const [txs, setTxs] = useState([]);
 
   useEffect(() => {
-    // Replace with your real API endpoint
     axios.get('/Swift/GetTransactionHistory')
       .then(res => setTxs(res.data))
       .catch(() => setTxs([]));

@@ -46,7 +46,7 @@ const Register = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Email</label>
-                  <input name="email" className="form-control" placeholder="Email" onChange={handleChange} required disabled={loading} />
+                  <input type="email" name="email" className="form-control" placeholder="Email" onChange={handleChange} required disabled={loading} />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Password</label>
@@ -58,7 +58,7 @@ const Register = () => {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Name</label>
-                  <input type="name" name="password" className="form-control" placeholder="Name" onChange={handleChange} required disabled={loading} />
+                  <input type="name" name="name" className="form-control" placeholder="Name" onChange={handleChange} required disabled={loading} />
                 </div>
                 <div className="d-grid gap-2">
                   <button type="submit" className="btn btn-success btn-lg rounded-pill fw-bold" disabled={loading}>

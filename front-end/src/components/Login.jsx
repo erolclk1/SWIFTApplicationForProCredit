@@ -46,7 +46,7 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Email</label>
-                  <input name="email" className="form-control" placeholder="Email" onChange={handleChange} required />
+                  <input type="email" name="email" className="form-control" placeholder="Email" onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Password</label>
